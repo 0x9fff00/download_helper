@@ -43,7 +43,7 @@ def get_data(mod, mc_version, release_phase):
         download_release_phase = download_soup.find('div', {'class': 'release-phase tip'}).get('title')
 
         if release_phase == download_release_phase or release_phase == 'Alpha' or (release_phase == 'Beta' and download_release_phase == 'Release'):
-            time = download_soup.find('abbr', {'class': 'tip standard-date standard-datetime'}).get('data-epoch')
+            time = int(download_soup.find('abbr', {'class': 'tip standard-date standard-datetime'}).get('data-epoch'))
             name = download_soup.find('a', {'class': 'overflow-tip'}).string
             link = download_soup.find('a', {'class': 'button tip fa-icon-download icon-only'}).get('href')
 
