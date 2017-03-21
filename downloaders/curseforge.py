@@ -40,7 +40,7 @@ def get_data(mod, mc_version, release_phase):
     download_soups = downloads_soup.find_all('tr', {'class': 'project-file-list-item'})
 
     for download_soup in download_soups:
-        download_release_phase = download_soup.find('div', {'class': 'release-phase tip'}).get('title')
+        download_release_phase = download_soup.find('td', {'class': 'project-file-release-type'}).find('div').get('title')
 
         if release_phase == download_release_phase or release_phase == 'Alpha' or (release_phase == 'Beta' and download_release_phase == 'Release'):
             time = int(download_soup.find('abbr', {'class': 'tip standard-date standard-datetime'}).get('data-epoch'))
