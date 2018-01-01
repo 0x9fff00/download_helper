@@ -1,4 +1,4 @@
-# Copyright (C) 2017 0x9fff00
+# Copyright (C) 2017-2018 0x9fff00
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,7 +31,11 @@ mc_version_to_filter = {
     '1.10.2': '2020709689%3A6170',
     '1.11': '1738749986%3A599',
     '1.11.0': '2020709689%3A6317',
-    '1.11.2': '2020709689%3A6452'
+    '1.11.2': '2020709689%3A6452',
+    '1.12': '1738749986%3A628',
+    '1.12.0': '2020709689%3A6580',
+    '1.12.1': '2020709689%3A6711',
+    '1.12.2': '2020709689%3A6756'
 }
 
 def get_data(mod, mc_version, release_phase):
