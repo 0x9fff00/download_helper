@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import urllib.request
+
 from bs4 import BeautifulSoup
 
 mc_version_to_filter = {
@@ -38,15 +39,20 @@ mc_version_to_filter = {
     '1.12.2': '2020709689%3A6756'
 }
 
+
 def get_data(mod, mc_version, release_phase):
-    downloads_html = urllib.request.urlopen('https://minecraft.curseforge.com/projects/{}/files?filter-game-version={}'.format(mod, mc_version_to_filter[mc_version])).read()
+    downloads_html = urllib.request.urlopen(
+        'https://minecraft.curseforge.com/projects/{}/files?filter-game-version={}'.format(mod, mc_version_to_filter[
+            mc_version])).read()
     downloads_soup = BeautifulSoup(downloads_html, 'html.parser')
     download_soups = downloads_soup.find_all('tr', {'class': 'project-file-list-item'})
 
     for download_soup in download_soups:
-        download_release_phase = download_soup.find('td', {'class': 'project-file-release-type'}).find('div').get('title')
+        download_release_phase = download_soup.find('td', {'class': 'project-file-release-type'}).find('div').get(
+            'title')
 
-        if release_phase == download_release_phase or release_phase == 'Alpha' or (release_phase == 'Beta' and download_release_phase == 'Release'):
+        if release_phase == download_release_phase or release_phase == 'Alpha' or (
+                release_phase == 'Beta' and download_release_phase == 'Release'):
             time = int(download_soup.find('abbr', {'class': 'tip standard-date standard-datetime'}).get('data-epoch'))
             name = download_soup.find('a', {'class': 'overflow-tip'}).string
             link = download_soup.find('a', {'class': 'button tip fa-icon-download icon-only'}).get('href')
@@ -57,6 +63,7 @@ def get_data(mod, mc_version, release_phase):
                 'time': time,
                 'release_phase': download_release_phase
             }
+
 
 def get_url(mod, mc_version, release_phase):
     return get_data(mod, mc_version, release_phase)['url']

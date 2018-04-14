@@ -12,7 +12,10 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import re, urllib.request
+import re
+import urllib.request
+
 
 def get_url(url):
-    return re.compile(b'^\s*.+? ?= ?["\'](https?://download[0-9]+\.mediafire.com/.*?)["\'];?\s*$', re.MULTILINE).search(urllib.request.urlopen(url).read()).group(1)
+    return re.compile(b'^\s*.+? ?= ?["\'](https?://download[0-9]+\.mediafire.com/.*?)["\'];?\s*$', re.MULTILINE).search(
+        urllib.request.urlopen(url).read()).group(1)
