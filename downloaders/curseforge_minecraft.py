@@ -21,9 +21,10 @@ from downloaders import curseforge
 def get_data(mod, mc_version, release_phase):
     warnings.warn('curseforge_minecraft.get_data is deprecated. Use curseforge.get_data instead.', DeprecationWarning)
 
-    if re.match(r'^\d+.\d+$', mc_version):
+    if re.match(r'^\d+\.\d+$', mc_version):
         raise NotImplementedError('Minecraft versions with wildcard PATCH versions are no longer supported.')
 
+    mc_version = re.sub(r'^(\d+\.\d+)\.0$', r'\1', mc_version)
     new_data = curseforge.get_data(curseforge.addon_slug_to_id('mc', mod), mc_version, release_phase)
 
     return {
