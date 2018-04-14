@@ -1,4 +1,4 @@
-# Copyright (C) 2017-2018 0x9fff00
+# Copyright (C) 2018 0x9fff00
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,11 +12,9 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from downloaders import curseforge_minecraft, mediafire, curseforge
+import json
+import urllib.request
 
-print(curseforge_minecraft.get_data('advanced-rocketry', '1.10.2', 'Beta'))
-print(curseforge_minecraft.get_data('rftools', '1.10.2', 'Beta'))
-print(curseforge_minecraft.get_url('rftools', '1.7.10', 'Release'))
-print(mediafire.get_url('http://www.mediafire.com/file/2czafa60rh4ajhj/mcp908.zip'))
-print(curseforge.get_data(224641, '1.12', 'Release'))
-print(curseforge.get_data(224641, '1.12', 'Alpha'))
+
+def parse_json_from_url(url):
+    return json.loads(urllib.request.urlopen(url).read().decode('utf-8'))

@@ -12,58 +12,28 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import urllib.request
+import re
+import warnings
 
-from bs4 import BeautifulSoup
-
-mc_version_to_filter = {
-    '1.7': '1738749986%3A5',
-    '1.7.2': '2020709689%3A361',
-    '1.7.10': '2020709689%3A4449',
-    '1.8': '1738749986%3A4',
-    '1.8.0': '2020709689%3A4455',
-    '1.8.8': '2020709689%3A5703',
-    '1.8.9': '2020709689%3A5806',
-    '1.9': '1738749986%3A552',
-    '1.9.0': '2020709689%3A5946',
-    '1.9.4': '2020709689%3A6084',
-    '1.10': '1738749986%3A572',
-    '1.10.0': '2020709689%3A6144',
-    '1.10.2': '2020709689%3A6170',
-    '1.11': '1738749986%3A599',
-    '1.11.0': '2020709689%3A6317',
-    '1.11.2': '2020709689%3A6452',
-    '1.12': '1738749986%3A628',
-    '1.12.0': '2020709689%3A6580',
-    '1.12.1': '2020709689%3A6711',
-    '1.12.2': '2020709689%3A6756'
-}
+from downloaders import curseforge
 
 
 def get_data(mod, mc_version, release_phase):
-    downloads_html = urllib.request.urlopen(
-        'https://minecraft.curseforge.com/projects/{}/files?filter-game-version={}'.format(mod, mc_version_to_filter[
-            mc_version])).read()
-    downloads_soup = BeautifulSoup(downloads_html, 'html.parser')
-    download_soups = downloads_soup.find_all('tr', {'class': 'project-file-list-item'})
+    warnings.warn('curseforge_minecraft.get_data is deprecated. Use curseforge.get_data instead.', DeprecationWarning)
 
-    for download_soup in download_soups:
-        download_release_phase = download_soup.find('td', {'class': 'project-file-release-type'}).find('div').get(
-            'title')
+    if re.match(r'^\d+.\d+$', mc_version):
+        raise NotImplementedError('Minecraft versions with wildcard PATCH versions are no longer supported.')
 
-        if release_phase == download_release_phase or release_phase == 'Alpha' or (
-                release_phase == 'Beta' and download_release_phase == 'Release'):
-            time = int(download_soup.find('abbr', {'class': 'tip standard-date standard-datetime'}).get('data-epoch'))
-            name = download_soup.find('a', {'class': 'overflow-tip'}).string
-            link = download_soup.find('a', {'class': 'button tip fa-icon-download icon-only'}).get('href')
+    new_data = curseforge.get_data(curseforge.addon_slug_to_id('mc', mod), mc_version, release_phase)
 
-            return {
-                'url': 'https://minecraft.curseforge.com' + link,
-                'name': name,
-                'time': time,
-                'release_phase': download_release_phase
-            }
+    return {
+        'url': new_data['url'],
+        'name': new_data['file_name'],
+        'time': int(new_data['time']),
+        'release_phase': new_data['extra']['release_type']
+    }
 
 
 def get_url(mod, mc_version, release_phase):
+    warnings.warn('curseforge_minecraft.get_url is deprecated. Use curseforge.get_url instead.', DeprecationWarning)
     return get_data(mod, mc_version, release_phase)['url']
