@@ -20,6 +20,7 @@ import dateutil.tz
 from .. import util
 
 API_BASE = 'https://cursemeta.dries007.net/api/v2/direct'
+API_GET_ADDON = API_BASE + '/GetAddOn/{addon_id}'
 API_GET_ADDON_FILES = API_BASE + '/GetAllFilesForAddOn/{addon_id}'
 API_GET_MATCH_FROM_SLUG = API_BASE + '/GetRepositoryMatchFromSlug/{game_slug}/{addon_slug}'
 
@@ -40,6 +41,10 @@ def addon_slug_to_id(game_slug, addon_slug):
             util.parse_json_from_url(API_GET_MATCH_FROM_SLUG.format(game_slug=game_slug, addon_slug=addon_slug))['Id']
         cache_addon_slug_to_id[(game_slug, addon_slug)] = return_value
         return return_value
+
+
+def get_addon_name(addon_id):
+    return util.parse_json_from_url(API_GET_ADDON.format(addon_id=addon_id))['Name']
 
 
 def get_data(addon_id, preferred_game_version, release_type, extra_game_versions=None):
