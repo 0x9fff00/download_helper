@@ -29,9 +29,17 @@ RELEASE_TYPE_MAP = {
     'Alpha': ['Release', 'Beta', 'Alpha'],
 }
 
+cache_addon_slug_to_id = {}
+
 
 def addon_slug_to_id(game_slug, addon_slug):
-    return util.parse_json_from_url(API_GET_MATCH_FROM_SLUG.format(game_slug=game_slug, addon_slug=addon_slug))['Id']
+    if (game_slug, addon_slug) in cache_addon_slug_to_id:
+        return cache_addon_slug_to_id[(game_slug, addon_slug)]
+    else:
+        return_value = \
+            util.parse_json_from_url(API_GET_MATCH_FROM_SLUG.format(game_slug=game_slug, addon_slug=addon_slug))['Id']
+        cache_addon_slug_to_id[(game_slug, addon_slug)] = return_value
+        return return_value
 
 
 def get_data(addon_id, preferred_game_version, release_type, extra_game_versions=None):
