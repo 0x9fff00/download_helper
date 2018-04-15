@@ -12,7 +12,7 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from downloaders import curseforge_minecraft, mediafire, curseforge
+from .downloaders import curseforge_minecraft, mediafire, curseforge
 
 print(curseforge_minecraft.get_data('advanced-rocketry', '1.10.2', 'Beta'))
 print(curseforge_minecraft.get_data('rftools', '1.10.2', 'Beta'))

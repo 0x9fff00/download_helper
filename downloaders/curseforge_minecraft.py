@@ -15,7 +15,7 @@
 import re
 import warnings
 
-from downloaders import curseforge
+from . import curseforge
 
 
 def get_data(mod, mc_version, release_phase):

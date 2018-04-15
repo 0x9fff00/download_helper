@@ -17,7 +17,7 @@ import operator
 import dateutil.parser
 import dateutil.tz
 
-import util
+from .. import util
 
 API_BASE = 'https://cursemeta.dries007.net/api/v2/direct'
 API_GET_ADDON_FILES = API_BASE + '/GetAllFilesForAddOn/{addon_id}'
