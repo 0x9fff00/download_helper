@@ -69,7 +69,7 @@ def get_data(addon_id, preferred_game_version, release_type, extra_game_versions
             if game_version in file['GameVersion'] and allowed_release_type and not file['IsAlternate']:
                 matches.append({
                     'url': file['DownloadURL'],
-                    'file_name': file['FileName'],
+                    'file_name': file['FileNameOnDisk'],
                     'time': dateutil.parser.isoparse(file['FileDate']).replace(tzinfo=dateutil.tz.tzutc()).timestamp(),
                     'extra': {
                         'release_type': file['ReleaseType'],
