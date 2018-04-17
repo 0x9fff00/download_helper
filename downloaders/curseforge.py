@@ -30,6 +30,12 @@ RELEASE_TYPE_MAP = {
     'Alpha': ['Release', 'Beta', 'Alpha'],
 }
 
+LESS_STABLE_RELEASE_TYPES_MAP = {
+    'Release': ['Beta', 'Alpha'],
+    'Beta': ['Alpha'],
+    'Alpha': [],
+}
+
 cache_addon_slug_to_id = {}
 
 
@@ -47,17 +53,20 @@ def get_addon_name(addon_id):
     return util.parse_json_from_url(API_GET_ADDON.format(addon_id=addon_id))['Name']
 
 
-def get_data(addon_id, preferred_game_version, release_type, extra_game_versions=None):
+def get_data(addon_id, preferred_game_version, release_type, extra_game_versions=None,
+             allow_less_stable_release_types=False):
     if extra_game_versions is None:
         extra_game_versions = []
 
     matches = []
     files = util.parse_json_from_url(API_GET_ADDON_FILES.format(addon_id=addon_id))
 
-    def match_files_for_game_version(game_version):
+    def match_files_for_game_version(game_version, release_type, allow_more_stable_release_types=True):
         for file in files:
-            if game_version in file['GameVersion'] and file['ReleaseType'] in RELEASE_TYPE_MAP[release_type] and not \
-                    file['IsAlternate']:
+            allowed_release_type = file['ReleaseType'] in RELEASE_TYPE_MAP[
+                release_type] if allow_more_stable_release_types else file['ReleaseType'] == release_type
+
+            if game_version in file['GameVersion'] and allowed_release_type and not file['IsAlternate']:
                 matches.append({
                     'url': file['DownloadURL'],
                     'file_name': file['FileName'],
@@ -69,14 +78,32 @@ def get_data(addon_id, preferred_game_version, release_type, extra_game_versions
                     }
                 })
 
-    match_files_for_game_version(preferred_game_version)
+    def match_files_for_release_type(release_type, allow_more_stable=True):
+        match_files_for_game_version(preferred_game_version, release_type,
+                                     allow_more_stable_release_types=allow_more_stable)
 
-    if extra_game_versions:
-        version_index = 0
+        if extra_game_versions:
+            i = 0
+
+            while not matches:
+                if i < len(extra_game_versions):
+                    match_files_for_game_version(extra_game_versions[i], release_type,
+                                                 allow_more_stable_release_types=allow_more_stable)
+                    i += 1
+                else:
+                    break
+
+    match_files_for_release_type(release_type)
+
+    if allow_less_stable_release_types:
+        i = 0
+
         while not matches:
-            if version_index < len(extra_game_versions):
-                match_files_for_game_version(extra_game_versions[version_index])
-                version_index += 1
+            less_stable_release_types = LESS_STABLE_RELEASE_TYPES_MAP[release_type]
+
+            if i < len(less_stable_release_types):
+                match_files_for_release_type(less_stable_release_types[i], allow_more_stable=False)
+                i += 1
             else:
                 break
 
